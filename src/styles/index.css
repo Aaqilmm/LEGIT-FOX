@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light theme - Premium Enterprise Design */
+    --background: 144 12% 96%; /* #F4F6F3 - Page background */
+    --foreground: 156 20% 14%; /* #17251F - Primary text */
+    --card: 0 0% 100%; /* #FFFFFF - Card background */
+    --card-foreground: 156 20% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 156 20% 14%;
+    --primary: 160 88% 27%; /* #087653 - Primary green */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 144 15% 52%; /* #68786E - Secondary text */
+    --secondary-foreground: 156 20% 14%;
+    --muted: 135 8% 89%; /* #DCE5DE - Borders */
+    --muted-foreground: 144 15% 52%; /* #68786E - Secondary text */
+    --accent: 43 86% 35%; /* #A87908 - Gold accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 135 8% 89%; /* #DCE5DE */
+    --input: 0 0% 100%; /* #FFFFFF */
+    --ring: 160 88% 27%;
+    --radius: 0.375rem;
+
+    /* Additional semantic tokens */
+    --navbar: 0 0% 100%; /* #FFFFFF */
+    --sidebar: 120 14% 97%; /* #F8FAF8 */
+    --elevated: 120 13% 98%; /* #F9FBF9 */
+    --active-nav: 145 33% 91%; /* #E0F0E6 */
+    --muted-text: 145 11% 53%; /* #849188 */
+  }
+
+  .dark {
+    /* Dark theme - Premium Enterprise Design */
+    --background: 156 29% 7%; /* #0B1411 - Page background */
+    --foreground: 144 20% 95%; /* #F1F5F2 - Primary text */
+    --card: 156 20% 13%; /* #17251F - Card background */
+    --card-foreground: 144 20% 95%;
+    --popover: 156 20% 13%;
+    --popover-foreground: 144 20% 95%;
+    --primary: 160 88% 27%; /* #087653 - Primary green */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 145 17% 64%; /* #9BAFA3 - Secondary text */
+    --secondary-foreground: 144 20% 95%;
+    --muted: 150 13% 21%; /* #293B32 - Borders */
+    --muted-foreground: 145 17% 64%; /* #9BAFA3 */
+    --accent: 45 84% 58%; /* #E4B93F - Gold accent */
+    --accent-foreground: 156 29% 7%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 144 20% 95%;
+    --border: 150 13% 21%; /* #293B32 */
+    --input: 156 27% 8%; /* #101B16 */
+    --ring: 160 88% 27%;
+
+    /* Additional semantic tokens */
+    --navbar: 156 27% 10%; /* #101D18 */
+    --sidebar: 156 28% 9%; /* #0E1915 */
+    --elevated: 156 20% 15%; /* #1B2C24 */
+    --active-nav: 155 37% 16%; /* #194333 */
+    --muted-text: 145 14% 52%; /* #788C80 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Semantic background utilities */
+  .bg-navbar {
+    background-color: hsl(var(--navbar));
+  }
+
+  .bg-sidebar {
+    background-color: hsl(var(--sidebar));
+  }
+
+  .bg-elevated {
+    background-color: hsl(var(--elevated));
+  }
+
+  .bg-active-nav {
+    background-color: hsl(var(--active-nav));
+  }
+
+  .text-muted-subtle {
+    color: hsl(var(--muted-text));
+  }
+}

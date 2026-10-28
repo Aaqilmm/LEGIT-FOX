@@ -1,0 +1,275 @@
+================================================================================
+MANUAL WORK REQUIRED - BACKEND, DATABASE, AND API CONFIGURATION
+================================================================================
+
+These tasks require manual setup and cannot be automated. Complete these after
+the frontend application is built and tested.
+
+================================================================================
+1. INSTALL DEPENDENCIES
+================================================================================
+
+Frontend:
+- Navigate to the project root directory (LEGIT)
+- Run: npm install
+- This will install all required packages from package.json
+
+================================================================================
+2. ENVIRONMENT CONFIGURATION
+================================================================================
+
+Frontend Environment (.env in root):
+- Copy .env.example to .env
+- Set VITE_DATA_MODE=mock (for demo) or VITE_DATA_MODE=api (for backend)
+- Set VITE_API_BASE_URL to your backend URL (default: http://localhost:4000/api)
+
+Backend Environment (server/.env - when backend is created):
+- PORT=4000
+- GEMINI_API_KEY=<your-gemini-api-key-here>
+- GEMINI_MODEL=gemini-1.5-pro (or your preferred model)
+- CORS_ORIGIN=http://localhost:3000
+- NODE_ENV=development
+
+IMPORTANT: Never commit real API keys to version control!
+
+================================================================================
+3. BACKEND SERVER SETUP (Optional - Required for API Mode)
+================================================================================
+
+The backend server needs to be created with:
+
+A. Project Structure:
+   server/
+   ├── src/
+   │   ├── app.ts
+   │   ├── server.ts
+   │   ├── routes/
+   │   │   ├── health.routes.ts
+   │   │   ├── assistant.routes.ts
+   │   │   ├── complaints.routes.ts
+   │   │   └── institutions.routes.ts
+   │   ├── services/
+   │   │   └── geminiAdapter.ts
+   │   ├── middleware/
+   │   │   ├── errorHandler.ts
+   │   │   └── validateRequest.ts
+   │   └── config/
+   │       └── env.ts
+   ├── package.json
+   └── tsconfig.json
+
+B. Required Backend Packages:
+   - express
+   - cors
+   - dotenv
+   - zod
+   - @google/generative-ai (for Gemini API)
+
+C. Key Backend Tasks:
+   1. Create Express server with TypeScript
+   2. Set up CORS middleware with explicit origins
+   3. Create health check endpoint: GET /api/health
+   4. Create Gemini API adapter in services/geminiAdapter.ts
+   5. Implement assistant chat endpoint: POST /api/assistant/chat
+   6. Add request validation using Zod
+   7. Add error handling middleware
+   8. Ensure GEMINI_API_KEY is loaded from environment variables ONLY
+   9. Return 503 Service Unavailable when Gemini is not configured
+
+D. Backend Commands:
+   - Install: npm install
+   - Development: npm run dev (with nodemon or ts-node-dev)
+   - Build: npm run build
+   - Start: npm start
+
+================================================================================
+4. GEMINI API KEY SETUP
+================================================================================
+
+1. Go to: https://aistudio.google.com/app/apikey
+2. Create a new API key for Gemini
+3. Add it to server/.env as GEMINI_API_KEY=<your-key>
+4. NEVER expose this key in frontend code, environment variables, or version control
+5. Configure Gemini model (recommended: gemini-1.5-pro for RAG capabilities)
+
+================================================================================
+5. DATABASE SETUP (Future Phase - Not Required for Current Demo)
+================================================================================
+
+When database integration is needed:
+
+A. PostgreSQL with Supabase:
+   1. Create Supabase project
+   2. Set up PostgreSQL database
+   3. Install pgvector extension for semantic search
+   4. Create database schema for:
+      - users
+      - institutions
+      - bureaus
+      - complaints
+      - case_actions
+      - case_outcomes
+      - related_case_suggestions
+      - coordination_requests
+      - regulatory_sources
+      - audit_events
+
+B. Database Connection:
+   - Add DATABASE_URL to server/.env
+   - Install pg (PostgreSQL client)
+   - Create database connection pool
+   - Implement repository pattern for data access
+
+C. Supabase Auth:
+   - Configure Supabase Auth
+   - Replace mock AuthProvider with real authentication
+   - Implement JWT verification in backend
+   - Set up Row Level Security (RLS) policies
+
+D. Object Storage:
+   - Configure Supabase Storage for evidence documents
+   - Implement file upload endpoints with validation
+   - Set up private buckets with access policies
+
+================================================================================
+6. VECTOR EMBEDDINGS SETUP (Future Phase)
+================================================================================
+
+For semantic complaint matching:
+
+1. Choose embedding model:
+   - text-embedding-004 (Google)
+   - sentence-transformers (open source)
+   - Consider multilingual support (English + Tamil)
+
+2. Set up vector storage:
+   - Enable pgvector extension in PostgreSQL
+   - Create vector column in complaints table
+   - Create vector index for similarity search
+
+3. Implement embedding generation:
+   - Generate embeddings on complaint creation
+   - Store in database with complaint record
+   - Create similarity search endpoint
+
+4. Implement RAG for regulatory sources:
+   - Embed regulatory documents
+   - Store in vector database
+   - Implement retrieval endpoint
+   - Return source metadata with responses
+
+================================================================================
+7. DEPLOYMENT SETUP
+================================================================================
+
+Frontend (Vercel recommended):
+1. Push code to GitHub
+2. Connect repository to Vercel
+3. Configure environment variables in Vercel dashboard
+4. Set up build command: npm run build
+5. Configure rewrites for React Router in vercel.json:
+   {
+     "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+   }
+
+Backend (Railway, Render, or similar):
+1. Create new project
+2. Connect repository or deploy from Docker
+3. Configure environment variables
+4. Set PORT from environment
+5. Configure CORS_ORIGIN to match frontend domain
+6. Set up health check endpoint monitoring
+
+Database (Supabase):
+1. Production database already hosted
+2. Configure connection pooling
+3. Set up automated backups
+4. Enable point-in-time recovery
+
+================================================================================
+8. TESTING REQUIREMENTS
+================================================================================
+
+Before production:
+1. Test all complaint categories with real scenarios
+2. Verify semantic matching accuracy
+3. Test RAG responses against verified regulatory sources
+4. Verify all Bureau routing rules
+5. Test role-based access control
+6. Perform security audit:
+   - No API keys in frontend
+   - No SQL injection vulnerabilities
+   - Proper input validation
+   - Secure file uploads
+   - Rate limiting on API endpoints
+7. Test at scale with realistic data volume
+8. Verify mobile responsiveness
+9. Test dark theme thoroughly
+10. Accessibility audit (WCAG 2.1 AA)
+
+================================================================================
+9. PRODUCTION CHECKLIST
+================================================================================
+
+Before going live:
+□ All environment variables configured and secure
+□ GEMINI_API_KEY is server-side only
+□ Database schema created and migrations tested
+□ Row Level Security policies configured
+□ Real authentication implemented and tested
+□ File upload security configured
+□ Rate limiting enabled
+□ Error logging configured (Sentry, LogRocket, etc.)
+□ Analytics configured (optional)
+□ All demo mode labels removed or clearly marked
+□ Official Bureau list verified with AICTE
+□ Regulatory source corpus verified and current
+□ Routing rules verified against official procedures
+□ Legal review completed
+□ Privacy policy and terms of service in place
+□ GDPR/data protection compliance verified
+□ Backup and disaster recovery plan in place
+□ Monitoring and alerting configured
+□ Performance testing completed
+□ Security penetration testing completed
+
+================================================================================
+10. CURRENT DEMO MODE FEATURES
+================================================================================
+
+The following features work in demo mode without backend:
+
+✓ Light/Dark theme toggle
+✓ Role-based demo login
+✓ Student landing page and navigation
+✓ Admin dashboard with metrics
+✓ Institution directory and profiles
+✓ Complaint registry and case workspace
+✓ Demo data persistence in localStorage
+✓ Status badges and UI components
+✓ Responsive design
+✓ Student assistant (with demo responses)
+✓ Complaint quality checker (with demo validation)
+
+The following require backend/database setup:
+
+✗ Real Gemini AI responses
+✗ Actual semantic complaint matching
+✗ RAG-based regulatory source retrieval
+✗ Real authentication and authorization
+✗ Persistent data storage
+✗ File uploads
+✗ Email notifications
+✗ Real-time updates
+✗ Advanced analytics and reporting
+✗ Cross-Bureau coordination workflows
+✗ Audit logging to database
+
+================================================================================
+END OF MANUAL WORK DOCUMENT
+================================================================================
+
+Questions or issues? Refer to:
+- Project_brief.txt for complete specifications
+- README.md for setup instructions
+- docs/API_CONTRACT.md for API endpoint documentation (when created)

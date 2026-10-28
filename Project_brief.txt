@@ -1,0 +1,880 @@
+ANTIGRAVITY CLI MASTER BUILD PROMPT PROJECT: LEGIT VERSION: 1.1 — FINAL CONSOLIDATED SPECIFICATION PURPOSE:
+Build a polished, responsive, backend-ready SIH prototype for AICTE
+grievance intelligence.
+
+============================================================ 0.
+INSTRUCTIONS TO ANTIGRAVITY — READ FIRST
+============================================================
+
+You are building the project inside the existing root folder named
+LEGIT. Read this entire specification before creating or editing files.
+
+Build the application in a clean, modular, maintainable way. Do not just
+produce a plan or mockup: create the working project files, implement
+the screens and interactions, run the available checks, fix errors, and
+leave clear setup instructions.
+
+The current phase is the website/application and backend integration
+foundation. The database will be designed and created separately after
+this phase. Therefore: - Do NOT create a real database or pretend that a
+database already exists. - Do NOT hard-code database credentials or
+expose API keys. - Do create strongly typed data models, a central
+API/service layer, API contracts, a configurable mock-data adapter, and
+a backend-ready project structure. - The UI must work end-to-end in demo
+mode using realistic, clearly labelled synthetic data. - When the future
+database/backend is connected, the UI should be switchable from mock
+services to real API calls without rewriting page components. - Do not
+display fake success for actions that have not actually happened. In
+demo mode, show a clear demo/simulated label and update local mock state
+honestly. - Build the student-facing application “Legit Fox” and the
+official-facing dashboard “AICTE Legit” as two distinct experiences in
+the same codebase, sharing the same design system and fox brand. - Do
+not invent AICTE data, legal rules, official Bureau names, or claims of
+integration. Label all demo records as synthetic.
+
+If any asset is missing, do not block the build. Use a tasteful fallback
+icon or placeholder, but do not generate a replacement logo or use
+unrelated imagery.
+
+============================================================ 1. PROJECT
+PURPOSE AND SIH PROBLEM
+============================================================
+
+The project addresses SIH problem statement SIH26264: an integrated
+dashboard for monitoring and tracking institution-related complaint
+cases across AICTE Bureaus/Cells.
+
+AICTE may receive complaints concerning the same institution through
+different Bureaus/Cells, including Regulation Bureau (RB), Public
+Grievance Redressal Cell (PGRC), and other relevant units. When cases
+are handled independently, officials may have limited visibility into
+related cases, overlapping actions, repeated document requests, delays,
+case ownership, and final outcomes.
+
+LEGIT is a coordinated grievance-intelligence platform with two
+connected user experiences:
+
+A. STUDENT EXPERIENCE — “Legit Fox” A friendly portal where students
+can: - Explain an issue in natural language. - Understand what
+information is needed to submit a useful complaint. - Check whether
+essential details or evidence are missing. - Receive simple, reasoned
+suggestions for improving a complaint. - Understand possible grievance
+categories and likely official routes. - Ask questions through an AI
+assistant that retrieves answers from verified regulatory/procedural
+documents when those documents are configured. - Prepare a factual
+complaint draft without inventing allegations. - Discover anonymized,
+relevant historical case summaries and recorded outcomes, where
+available. - Track a complaint only when an actual authorized
+submission/integration exists. In this prototype, clearly label any
+submission/tracking process as simulated.
+
+B. OFFICIAL EXPERIENCE — “AICTE Legit” An authorized-official dashboard
+where users can: - See consolidated complaint activity by institution. -
+Search institution profiles and complaint records. - View the
+responsible Bureau/Cell, owner, status, timeline, next action, due date,
+and recorded outcome. - Detect potential cross-Bureau overlaps and
+related complaints. - Review, confirm, or dismiss suggested
+relationships with a reason. - Coordinate across Bureaus using requests,
+responses, ownership, and action history. - Monitor overdue cases,
+inactivity, deadlines, escalations, workload, and disposal trends. -
+Search and filter by institution, AICTE Permanent ID, case ID,
+Bureau/Cell, region, category, status, and dates. - Retrieve similar
+historical cases and verified recorded actions/outcomes to support, not
+replace, official judgement. - Generate reports and inspect audit
+history.
+
+The core value proposition: “LEGIT understands complaints expressed in
+different words, identifies potential cross-Bureau overlaps, checks
+complaint completeness before submission, and retrieves verified
+historical actions and outcomes to help students and authorized
+officials handle grievances more efficiently.”
+
+The official dashboard and inter-Bureau coordination are the core SIH
+solution. The student chatbot and quality checker are supporting
+innovations, not a replacement for official grievance processes.
+
+============================================================ 2.
+CONFIRMED PRODUCT IDEAS — MUST BE IMPLEMENTED
+============================================================
+
+FEATURE 1 — SEMANTIC GRIEVANCE MATCHING Complaints can describe the same
+underlying issue using different wording. Example synthetic examples: -
+“My college is keeping my original certificates.” - “The institution
+refuses to return my academic documents.” - “I graduated but still
+cannot collect my original certificates.”
+
+The system should be designed to compare meanings, not only exact
+keywords. In the current UI/demo phase: - Create a Similar Cases panel
+showing ranked candidates, similarity score/label, matching reasons,
+institution, Bureau, status, and case ID. - Explain why a case was
+suggested, such as matching issue type, institution, key facts, or
+semantic similarity. - Separate exact institution matching from semantic
+issue similarity. - Treat similarity as a signal, never proof that two
+complaints are duplicates. - Never automatically merge, close, reject,
+or cancel complaints. - Let authorized officials confirm, mark as
+related, mark as duplicate, or dismiss a suggested match with a
+reason. - Keep unrelated complaints for the same institution separate. -
+Related complaints from different institutions may be useful as
+historical examples but must not be falsely linked as the same case. -
+Use synthetic examples until a real database and embedding service are
+configured.
+
+FEATURE 2 — HISTORICAL RESOLUTION INTELLIGENCE When a case is closed,
+the authorized officer should record structured information about the
+outcome and actions taken. A future similar case can retrieve those
+records as potentially useful examples.
+
+Provide a structured case-closure form with: - Outcome category. -
+Summary of the final decision/action. - Actions taken. - Whether the
+issue was fully resolved, partially resolved, not substantiated,
+referred elsewhere, withdrawn, procedurally closed, unresolved at
+closure, or another configured category. - Evidence/reference notes. -
+Closure date. - Reviewing/closing official. - Optional follow-up or
+compliance check. - Verification state and verifier.
+
+Rules: - A closed case is not automatically a successful resolution. - A
+historical action is not a legal precedent and is not guaranteed to
+apply to a new case. - Only verified outcomes should be treated as
+trusted historical guidance. - Do not automatically retrain a model or
+create new legal rules from every closure. In the future backend, index
+verified outcomes for retrieval. - Show the user why a historical case
+may be relevant and include a caveat that applicability depends on facts
+and current rules. - In demo mode, make this workflow functional with
+local mock state and clearly label data as synthetic.
+
+FEATURE 3 — SMART EVIDENCE & COMPLAINT QUALITY CHECKER This is a
+supportive completeness checker, not an automatic rejection engine.
+
+The checker should: - Ask simple, relevant follow-up questions based on
+the complaint category and details supplied. - Identify missing
+information, unclear dates, unclear institution identity, missing event
+chronology, or evidence/document references that may help an official
+assess the issue. - Explain in plain language why each requested detail
+is useful. - Separate required fields from optional supporting
+details. - Provide a short checklist with states such as Complete,
+Needed, and Optional. - Offer a simple “Improve my complaint” flow that
+helps the student add missing details. - Re-check the complaint after
+edits and show progress. - Explain that a missing attachment does not
+always mean a complaint is invalid; the official rules/process determine
+actual requirements. - Never automatically discard or reject a complaint
+because the checker reports missing information. - Never encourage a
+student to fabricate evidence or add unsupported allegations. - Allow “I
+don’t have this information” or “Not applicable” where appropriate. -
+Keep the process low-effort, accessible, and respectful. - The official
+decision on acceptance/validity belongs to the authorized process, not
+the AI checker.
+
+FEATURE 4 — CROSS-BUREAU COORDINATION INTELLIGENCE - Display potential
+overlaps where an institution has multiple active cases across
+Bureaus/Cells. - Show the reason for each overlap suggestion and
+distinguish same-institution matching from issue similarity. - Show
+current owner, Bureau, status, last action, next action, and expected
+disposal date. - Support a coordination request, responses, assigned
+responsibilities, due dates, and an action log. - Let authorized users
+accept, reject, or defer a suggested relationship, recording who made
+the decision and why. - Detect possible conflicting or repetitive
+actions only as suggestions; do not assert conflict without review. -
+Never automatically reassign or merge cases based solely on AI output.
+
+FEATURE 5 — VERIFIED REGULATORY ASSISTANT / RAG FOUNDATION The student
+assistant should be prepared for retrieval-augmented generation (RAG): -
+Retrieve relevant passages from a configured collection of verified,
+current official regulations, procedures, circulars, and guidance. -
+Display document title and section/provision/page or other available
+source metadata beside answers. - Clearly distinguish regulatory source
+material from anonymized historical case examples. - If no relevant
+source is available, say so rather than inventing a legal answer. - Do
+not fabricate laws, sections, deadlines, rights, or official
+processes. - Avoid presenting output as binding legal advice or a final
+official decision. - Allow a future Gemini API integration through the
+server only. Never expose the Gemini API key in frontend code. - For
+now, implement a typed assistant service interface and a demo response
+mode. Do not pretend that RAG is live if the source corpus or API is not
+configured. - The assistant can help categorize a complaint and explain
+possible routes, but it must not route every issue to PGRC
+automatically. Routing rules must be configurable and verified against
+official guidance.
+
+============================================================ 3. BUREAU
+MASTER DATA AND ROUTING
+============================================================
+
+The team expects roughly 27 Bureaus/Cells/units may be relevant, but the
+authoritative list and names must be verified before production use.
+
+Do NOT invent or hard-code 27 official Bureau names. Instead: - Create a
+configurable Bureau/Cell master-data model and an admin screen to manage
+entries. - Use a small set of clearly marked DEMO Bureau entries only,
+including illustrative labels such as “Regulation Bureau (RB) — demo”
+and “Public Grievance Redressal Cell (PGRC) — demo”. - Include an “Other
+/ Needs review” fallback. - Store Bureau code, display name,
+description, active state, supported categories, and routing metadata. -
+Make the count and list configurable; do not assume there are exactly 27
+until verified. - The complaint classification UI can suggest a Bureau
+based on category, institution details, and configured routing rules. -
+Show confidence/reasoning and allow authorized manual correction. - If
+confidence is low, suggest “Needs human review” rather than inventing a
+confident route. - Keep all routing rules configurable and versioned
+later in the backend.
+
+============================================================ 4. USER
+ROLES AND ACCESS
+============================================================
+
+Implement role-aware navigation and screen permissions in the UI. The
+backend must enforce the same permissions when it is connected; frontend
+hiding alone is not security.
+
+Roles: 1. Student / Complainant - Access only to their own profile,
+complaint drafts, and authorized tracking information. - Cannot view
+internal officer remarks, confidential evidence, or other students’
+complaints. 2. Bureau Officer - Views and manages cases within
+authorized Bureau scope. - Can record actions, request coordination,
+review suggested matches, and enter closure outcomes when permitted. 3.
+Regional Officer - Views permitted regional institution/case data and
+can perform authorized regional actions. 4. Senior Management /
+Read-only Executive - Views consolidated metrics, reports, overdue
+cases, escalations, and cross-Bureau summaries. - Access to detailed
+personal data should be restricted. 5. Super Admin - Manages users, role
+assignments, Bureau master data, categories, routing configuration, and
+system settings.
+
+For the demo: - Provide a role selector/demo login so reviewers can
+inspect Student, Bureau Officer, Regional Officer, Senior Management,
+and Super Admin views without real authentication. - Label demo login
+and synthetic records clearly. - Build an AuthProvider/AuthService
+interface so Supabase Auth or another verified auth provider can be
+connected later. - Never use a frontend-only role check as proof of real
+authorization.
+
+============================================================ 5. COMPLETE
+SCREEN / NAVIGATION REQUIREMENTS
+============================================================
+
+Use a clear information architecture. Do not cram everything onto one
+giant page. Reuse components and keep routes consistent.
+
+PUBLIC / STUDENT APP — “Legit Fox” 1. Student landing / welcome page -
+Main heading, short explanation, primary CTA to start getting help,
+secondary CTA to learn about the process. - Use the welcome/mascot asset
+if available. - Clearly explain that the assistant helps prepare and
+understand a complaint but is not the official decision-maker. 2.
+Student sign-in / demo access - Auth-ready UI; demo access clearly
+labelled. 3. Student dashboard - Draft complaints, submitted/demo
+complaints, current status, latest updates, and next steps. 4. Grievance
+assistant / chatbot - Chat interface, suggested questions, source cards,
+similar historical case cards, and a clear “not legal advice / verify
+with official sources” note. 5. Smart Complaint Quality Checker -
+Category selection, institution identification, issue description,
+chronology, optional evidence references, missing-information checklist,
+explanations, completion progress, edit/recheck, and draft generation.
+6. Complaint draft review - Editable factual draft, checklist, save
+draft, and demo submission clearly labelled as simulated. 7. Complaint
+detail / tracking - Student-safe timeline and public-facing status only;
+never reveal internal notes. 8. Help / process guidance - Explain what
+information may be useful, evidence handling, and where to verify
+official procedures.
+
+OFFICIAL ADMIN APP — “AICTE Legit” 1. Executive Dashboard - Total cases,
+pending, under process, disposed, transferred, overdue, escalated,
+overlap alerts, workload, and disposal trends. - Use charts with
+accessible labels and clear definitions. 2. Institution Directory -
+Search/filter by institution name, AICTE Permanent ID, region, and
+institution status. 3. Institution Profile - Institution identity,
+Permanent ID, region, address (demo), consolidated complaint history,
+active cases, cross-Bureau activity, timeline, and case relationships.
+4. Complaint Registry - Searchable/filterable table with case ID,
+institution, Bureau, category, status, owner, received date, last
+action, next action, due date, and ageing. 5. Case Detail / Case
+Workspace - Case summary, status, category, institution, assigned
+Bureau/official, dates, action timeline, documents/evidence references,
+similar cases, suggested overlaps, coordination activity, and closure
+outcome. 6. Overlap Intelligence - Ranked possible matches with
+explanation, similarity indicators, same-institution indicator,
+active/closed status, and confirm/related/duplicate/dismiss actions. 7.
+Coordination Centre - Requests, responses, participating Bureaus,
+responsible officer, due date, agreed actions, and activity timeline. 8.
+Alerts & Escalations - Due soon, overdue, inactivity, unresolved
+coordination request, possible overlap awaiting review, and escalation
+queue. 9. Reports & Analytics - Filters and reports by Bureau, region,
+institution, category, status, case age, disposal time, overlap,
+monthly/quarterly trend. - Use realistic demo metrics and label them
+synthetic. 10. Bureau / Category / Routing Configuration - Manage
+configurable Bureau entries, categories, routing rules, and
+active/inactive state. 11. User & Role Management - Demo UI for users
+and roles; real management requires future backend auth. 12. Audit Log -
+Who performed an action, when, what changed, and reason. Demo records
+must be marked synthetic.
+
+Do not make every item a separate complicated page if a clean tabbed
+workspace is more usable. However, every core capability must be
+accessible and functional.
+
+============================================================ 6. CASE
+STATUS AND WORKFLOW
+============================================================
+
+Support configurable statuses, including: - Draft - Received /
+Submitted - Under Review - Under Process - Awaiting Information -
+Transferred - Coordination Required - Escalated - Disposed / Closed -
+Reopened (if allowed by policy)
+
+Statuses should be represented with consistent badges and accessible
+colour contrast. Do not assume “Disposed” means “resolved successfully”.
+
+Each case should support: - Unique case ID (demo-generated until backend
+exists). - Institution ID / AICTE Permanent ID when known. - Category
+and issue summary. - Original complaint wording. - Structured issue
+fields when available. - Assigned Bureau/Cell. - Assigned official
+(optional demo field). - Current status. - Received / created /
+last-action / next-action / expected-disposal dates. - Action timeline
+with actor, role, timestamp, action, remarks, and evidence references. -
+Potentially related cases and relationship-review state. - Coordination
+requests. - Closure outcome and verification details.
+
+Never overwrite the original complaint text when generating a polished
+draft. Keep original wording and generated draft as separate fields.
+
+============================================================ 7.
+DASHBOARD METRICS AND ALERT RULES
+============================================================
+
+Create demo-ready metrics for: - Total complaints. - Pending / under
+review / under process. - Disposed / closed. - Transferred. - Overdue. -
+Escalated. - Potential overlaps awaiting review. - Average age of open
+cases. - Workload by Bureau. - Monthly received versus disposed. -
+Disposal-time distribution. - Cases by region/category/status.
+
+Deadline logic: - Derive “Due soon” and “Overdue” from received/expected
+disposal dates and configured SLA values. - Do not hard-code an official
+SLA as if verified. - In demo mode use clearly labelled illustrative SLA
+values. - Make date and status logic testable in utility functions. -
+Use the same logic consistently across cards, lists, alerts, and
+reports.
+
+============================================================ 8. DESIGN
+SYSTEM AND BRANDING
+============================================================
+
+Product names: - Student application: Legit Fox - Admin dashboard: AICTE
+Legit - Root project folder: LEGIT
+
+Confirmed colours: - Emerald primary: #065F46 - Gold accent: #D4AF37 -
+White: #FFFFFF - Dark background: #0B1F18 - Dark surface/card: #132B22 -
+Light background: #F8F7F4 - Light surface/card: #FFFFFF - Light primary
+text: #1F2937 - Dark primary text: #F3F4F6 - Muted text: choose
+accessible neutral values that pass contrast checks. - Borders: use
+subtle neutral/emerald-tinted borders with accessible contrast.
+
+Visual direction: - Modern, premium, minimal, professional,
+responsive. - Avoid the dated government-portal look. - Avoid excessive
+gradients, clutter, giant decorative backgrounds, glassmorphism,
+translucency, blurred backgrounds, and dot-matrix patterns. - Prefer
+solid surfaces, clear typography, deliberate spacing, simple borders,
+and restrained shadows. - Gold is an accent, not the main body-text
+colour. Ensure all text is readable in both themes. - Provide working
+Light and Dark theme toggle. Persist preference locally. - Use a
+consistent design system for both student and admin experiences, but
+make the admin interface denser and data-oriented and the student
+interface more approachable. - Responsive layout for desktop, tablet,
+and mobile. - Accessible keyboard navigation, focus indicators, labels,
+contrast, reduced-motion support, and meaningful empty/error/loading
+states. - Use Lucide React icons for common UI symbols; do not generate
+separate images for standard icons. - Use Recharts for dashboards where
+appropriate. - Avoid unnecessary animations. If used, keep subtle and
+accessible.
+
+============================================================ 9. BRAND
+IMAGE ASSETS — USE EXACT PATHS
+============================================================
+
+The user has already created the folders under the existing project
+root. Preserve the exact folder names and filenames. Do not rename,
+duplicate, or move assets without permission.
+
+BRANDING: - public/assets/branding/legit-fox-logo.png Full horizontal
+student-app logo containing the fox emblem and “Legit Fox” wordmark. Use
+on the Legit Fox student portal, sign-in, and suitable headers. -
+public/assets/branding/aicte-legit-logo.png Full horizontal admin logo
+containing the same fox emblem and “AICTE Legit” wordmark. Use on the
+admin dashboard and admin sign-in. -
+public/assets/branding/legit-fox-icon.png Fox emblem only. Use in
+compact sidebar branding and as the source for the browser favicon/app
+icon. If the image has a non-transparent background, do not place it on
+arbitrary surfaces without checking its appearance.
+
+MASCOT: - public/assets/mascot/legit-fox-mascot.png Full-body friendly
+robotic fox mascot in white, emerald green, and gold. Use selectively
+for the chatbot welcome panel, onboarding, and contextual help. Do not
+put it on every page. - public/assets/mascot/legit-fox-avatar.png
+Close-up fox-head avatar. Use for the floating chatbot launcher, chatbot
+header, and assistant message avatar. -
+public/assets/mascot/legit-fox-welcome.png Welcome illustration,
+intended for the student landing/welcome page if present. -
+public/assets/mascot/legit-fox-assistance.png Complaint assistance
+illustration for the Smart Evidence & Complaint Quality Checker.
+
+Image rules: - Reference static assets with paths beginning /assets/...
+from the public folder. - Add descriptive alt text; decorative mascot
+images use empty alt text where appropriate. - Preserve aspect ratio and
+use object-contain. Never stretch logos. - The main logo and mascot are
+different assets and must not be confused. - The same fox emblem is used
+by both products, but the wordmark changes by product. - Generate
+favicon files from legit-fox-icon.png in a later asset step or use a
+small icon path if conversion tools are unavailable. Do not require
+another generated illustration. - If an asset file is missing, implement
+a graceful fallback and continue.
+
+============================================================ 10.
+REQUIRED TECHNOLOGY STACK
+============================================================
+
+Frontend: - React 18 or later. - TypeScript with strict type checking. -
+Vite. - Tailwind CSS. - shadcn/ui where it improves quality; use
+accessible reusable components. - React Router for routing. - TanStack
+Query (React Query) for server-state/data-fetching patterns. - Zustand
+or React Context for small global UI/auth/demo state; avoid unnecessary
+state libraries. - React Hook Form + Zod for forms and validation. -
+Lucide React for icons. - Recharts for data visualizations. - date-fns
+for date utilities where useful.
+
+Backend integration foundation: - Node.js with TypeScript. - Express API
+structure (can be scaffolded separately from the frontend within this
+repository). - Zod or equivalent validation for API input. - A central
+server-side configuration module. - Gemini API integration interface,
+with the key kept exclusively in server environment variables. - Do not
+build a real database yet. Create repository/service interfaces and mock
+implementations that can later be replaced with
+PostgreSQL/Supabase-backed repositories. - Do not add a database driver
+or pretend to connect to a database until the database phase. - Provide
+API route contracts and example JSON request/response schemas. - Include
+a health endpoint in the optional Express scaffold. - If implementing
+the Express scaffold now, keep it minimal and independent of mock
+frontend data. It must return honest “not configured” responses for
+unavailable integrations, not fake live AI results.
+
+Future database target (design for compatibility, do not create/connect
+now): - PostgreSQL, likely Supabase PostgreSQL. - pgvector for semantic
+embeddings. - Supabase Auth or another chosen auth provider after the
+database phase. - Private object storage for evidence documents. -
+Database schema and row-level authorization policies will be planned
+separately. - The frontend should call services and typed API contracts,
+not access the database directly.
+
+AI: - Gemini API for chat/structured extraction through a server-side
+adapter. - A lightweight embedding model appropriate for English and
+potential Tamil support, selected and evaluated during the
+backend/database phase. - Semantic retrieval must be separate from
+regulatory RAG retrieval and historical outcome retrieval. - Do not
+pretend that Gemini or a vector database is connected before
+configuration. - The application must remain useful without AI API
+credentials by using deterministic demo responses and clearly indicating
+demo mode.
+
+============================================================ 11.
+RECOMMENDED FOLDER / FILE STRUCTURE
+============================================================
+
+Create a maintainable structure inside the existing LEGIT root. Do not
+create a nested second LEGIT folder.
+
+Suggested structure:
+
+LEGIT/ public/ assets/ branding/ legit-fox-logo.png aicte-legit-logo.png
+legit-fox-icon.png mascot/ legit-fox-mascot.png legit-fox-avatar.png
+legit-fox-welcome.png legit-fox-assistance.png favicon.ico (derive from
+fox icon if possible) src/ app/ App.tsx router.tsx providers/
+AppProviders.tsx ThemeProvider.tsx AuthProvider.tsx components/ layout/
+StudentLayout.tsx AdminLayout.tsx AppSidebar.tsx Topbar.tsx
+PageHeader.tsx common/ LoadingState.tsx ErrorState.tsx EmptyState.tsx
+DemoModeBadge.tsx ConfirmDialog.tsx branding/ BrandLogo.tsx
+FoxMascot.tsx dashboard/ institutions/ complaints/ overlap/
+coordination/ alerts/ reports/ chatbot/ quality-checker/ forms/ tables/
+ui/ pages/ student/ StudentLandingPage.tsx StudentDashboardPage.tsx
+AssistantPage.tsx ComplaintCheckerPage.tsx ComplaintDraftPage.tsx
+StudentComplaintDetailPage.tsx HelpPage.tsx admin/
+AdminDashboardPage.tsx InstitutionDirectoryPage.tsx
+InstitutionProfilePage.tsx ComplaintRegistryPage.tsx
+CaseWorkspacePage.tsx OverlapIntelligencePage.tsx
+CoordinationCentrePage.tsx AlertsPage.tsx ReportsPage.tsx
+BureauConfigurationPage.tsx UserManagementPage.tsx AuditLogPage.tsx
+auth/ DemoLoginPage.tsx NotFoundPage.tsx services/ api/ apiClient.ts
+apiRoutes.ts auth/ authService.ts mockAuthService.ts institutions/
+institutionService.ts mockInstitutionService.ts complaints/
+complaintService.ts mockComplaintService.ts matching/ matchingService.ts
+outcomes/ outcomeService.ts coordination/ coordinationService.ts
+reports/ reportService.ts assistant/ assistantService.ts
+mockAssistantService.ts config/ runtimeConfig.ts data/
+demoInstitutions.ts demoComplaints.ts demoBureaus.ts demoUsers.ts
+demoOutcomes.ts demoDocuments.ts hooks/ types/ auth.ts institution.ts
+complaint.ts bureau.ts matching.ts outcome.ts coordination.ts report.ts
+assistant.ts api.ts utils/ dates.ts status.ts validation.ts ids.ts
+styles/ index.css theme.css tests/ server/ src/ app.ts server.ts routes/
+health.routes.ts assistant.routes.ts middleware/ services/
+geminiAdapter.ts config/ env.ts types/ .env.example package.json
+tsconfig.json .env.example .gitignore README.md package.json
+tsconfig.json vite.config.ts tailwind.config.ts (if required by chosen
+Tailwind version) postcss.config.js (if required) eslint.config.js
+prettier config if used
+
+This is a suggested structure. Keep it practical and avoid creating
+dozens of empty files. Files should contain real code or be omitted
+until needed. Organize by feature and reuse components. If using a
+monorepo setup, document root commands clearly.
+
+============================================================ 12.
+FRONTEND / API CONTRACT RULES
+============================================================
+
+All pages must use typed services. Do not put demo arrays directly
+inside page components.
+
+Create a runtime setting such as: VITE_DATA_MODE=mock
+VITE_API_BASE_URL=http://localhost:4000/api
+
+The frontend must support: - mock mode: calls mock services and is
+usable without a backend/database. - API mode: calls the configured
+backend URL and displays real loading/error states if the backend is
+unavailable. - Never silently fall back from API mode to mock data after
+a failure. Show a clear connection error so reviewers know data is not
+live. - Put environment parsing in one place. - Keep API
+request/response types in src/types/. - Use TanStack Query or an
+equivalent consistent pattern for loading, caching, mutation, and error
+handling. - Centralize error handling, toasts, and loading states. - Use
+pagination/filter parameters in service interfaces even if demo mode
+filters locally. - Keep business logic out of presentational
+components. - Provide typed interfaces for institution, complaint,
+Bureau, case action, case outcome, related-case suggestion, coordination
+request, notification, audit event, user, and regulatory source. - Use
+stable demo IDs and deterministic seeded data where possible. - Ensure
+all important buttons have meaningful working behaviour in demo mode. If
+a capability is not implemented, disable it with a clear explanation
+instead of making it appear functional.
+
+Suggested API endpoints to document and prepare service interfaces
+for: - GET /api/health - GET /api/institutions - GET
+/api/institutions/:id - GET /api/institutions/:id/complaints - GET
+/api/complaints - POST /api/complaints/drafts - GET
+/api/complaints/:id - PATCH /api/complaints/:id - POST
+/api/complaints/:id/actions - POST /api/complaints/:id/closure - GET
+/api/complaints/:id/similar - GET /api/overlaps - POST
+/api/overlaps/:id/review - GET /api/coordination-requests - POST
+/api/coordination-requests - POST
+/api/coordination-requests/:id/responses - GET /api/alerts - GET
+/api/reports/summary - GET /api/bureaus - POST /api/assistant/chat
+
+Document the API contract in README or docs/API_CONTRACT.md. Endpoints
+are contracts only until implemented; do not claim all are live.
+
+============================================================ 13. DATA
+MODELS TO PREPARE
+============================================================
+
+Create TypeScript types for the following. These are application
+contracts, not the final database schema.
+
+Institution: - id - aictePermanentId - name - region - state -
+addressSummary - institutionType (optional) - status
+(configured/active/inactive/under review as appropriate) - createdAt /
+updatedAt
+
+Complaint: - id / caseId - institutionId (nullable if not yet
+identified) - submittedById (privacy-controlled) - originalDescription -
+draftDescription (optional) - category - status - assignedBureauId -
+assignedOfficerId (optional) - receivedAt - lastActionAt - nextActionAt
+(optional) - expectedDisposalAt (optional) - closedAt (optional) -
+visibility level - source type (demo, student portal, authorized
+import) - createdAt / updatedAt
+
+CaseAction: - id - complaintId - actionType - summary - remarks -
+actorId / actorRole - occurredAt - evidenceReferences (metadata only) -
+visibility (student-visible or internal) - audit reference
+
+CaseOutcome: - id - complaintId - outcomeType - resolutionSummary -
+actionsTaken - evidenceReferenceSummary - verified - verifiedBy -
+verifiedAt - closedAt - followUpRequired - sourceCaseReference - notes /
+applicability caveat
+
+Bureau: - id - code - displayName - description - active -
+supportedCategories - routingRules metadata - demo flag
+
+RelatedCaseSuggestion: - id - sourceComplaintId - candidateComplaintId -
+semanticSimilarity (optional numeric score) - matchingReasons -
+sameInstitution - suggestedRelationship (potential duplicate / related /
+historical example / possible action overlap) - reviewStatus (pending /
+confirmed / dismissed) - reviewedBy - reviewedAt - reviewReason - demo
+flag
+
+CoordinationRequest: - id - related complaint IDs - requesting Bureau -
+target Bureau(s) - reason - requestedAction - dueAt - status -
+responses - assigned responsibility - createdAt / updatedAt
+
+RegulatorySource: - id - title - documentType - officialSourceName -
+sectionOrProvision - pageNumber (optional) - publicationDate
+(optional) - effectiveDate (optional) - sourceUrl (optional) -
+verifiedAt (optional) - version - extractedPassage - document status
+
+AuditEvent: - id - actorId - actorRole - action - entityType -
+entityId - timestamp - reason - before/after summary where appropriate
+
+============================================================ 14.
+SECURITY, PRIVACY, AND RESPONSIBLE AI
+============================================================
+
+-   Do not place Gemini API keys or other secrets in Vite frontend
+    variables. Use server environment variables only.
+-   Provide .env.example with placeholder variable names, never real
+    keys.
+-   Add .env* to .gitignore except .env.example.
+-   Do not commit user-uploaded evidence, private records, or real
+    personal information.
+-   Use synthetic demo data only.
+-   Student users must not see internal officer notes, confidential
+    documents, other students’ identities, or other students’ complaint
+    records.
+-   Use mock authorization in the UI for demonstration only and document
+    that production access control must be enforced server-side and at
+    the database row/policy level.
+-   File uploads, when designed, should have file type/size validation,
+    private storage, and malware-scanning integration planned for
+    production. Do not make files publicly accessible by default.
+-   Never use AI similarity alone to reject, merge, close, or transfer a
+    complaint.
+-   Keep human review for case relationship decisions, Bureau routing
+    when confidence is low, and regulatory decisions.
+-   Keep explanations visible: why a case was suggested, why information
+    is requested, and which official source supports a regulatory
+    answer.
+-   Distinguish verified regulations from historical outcomes.
+-   Avoid storing unnecessary personal data in prompts to external AI
+    services. The future backend must minimize/redact personal
+    identifiers where possible and follow applicable policies.
+-   If AI is unavailable or uncertain, the interface must say so and
+    allow a non-AI/manual route.
+
+============================================================ 15. DEMO
+DATA AND TESTING
+============================================================
+
+Create believable but fictional demo data: - At least 8 synthetic
+institutions across a few fictionalized/demo regions. - At least 20
+synthetic complaint records in different statuses and categories. - At
+least 5 configurable demo Bureau/Cell entries; do not represent this as
+the official full Bureau list. - At least 5 synthetic historical
+outcomes with different outcome categories. - Include examples of
+semantically similar wording for the same issue. - Include multiple
+complaints for the same institution across different demo Bureaus,
+including at least one genuine-looking potential overlap and unrelated
+complaints that must not be linked. - Include overdue, due-soon,
+transferred, escalated, awaiting-information, and disposed cases. -
+Include synthetic action timelines, coordination requests, alerts, and
+audit events. - Clearly show “DEMO DATA — NOT OFFICIAL AICTE DATA” in
+the application when mock mode is active. - Never use real student
+names, real complaint details, or fabricated claims that the records
+came from AICTE.
+
+Testing: - Add tests for deadline/overdue calculation, status labels,
+complaint-quality checklist, similarity-result rendering/business rules,
+and role-specific navigation. - Ensure same institution + different
+issue is not automatically marked duplicate. - Ensure different
+institution + similar issue can be a historical example without being
+treated as the same case. - Ensure unverified outcomes are not shown as
+verified guidance. - Ensure the checker never automatically rejects a
+complaint. - Ensure student view never renders internal notes. - Ensure
+API-mode failure displays a clear error instead of silently showing mock
+data. - Run TypeScript checking, lint, tests, and production build. Fix
+errors before finishing.
+
+============================================================ 16. QUALITY
+AND IMPLEMENTATION RULES
+============================================================
+
+-   Use strict TypeScript. Avoid any; use explicit types and
+    discriminated unions where useful.
+-   Use reusable, accessible React components.
+-   Use consistent naming: PascalCase for components, camelCase for
+    variables/functions, kebab-case for filenames where appropriate.
+-   Keep pages small and focused; extract complex widgets into
+    components.
+-   Keep API logic and business logic out of UI components.
+-   Use a shared design token system for both light and dark themes.
+-   Add responsive tables: on narrow screens, use suitable cards or
+    horizontal scrolling without breaking layout.
+-   Provide loading, empty, success, validation, and error states.
+-   Forms must validate and show understandable error messages.
+-   No dead buttons, placeholder links to #, unexplained dummy
+    interactions, or fake live integrations.
+-   Do not leave the core screens as blank pages or just static
+    screenshots.
+-   Do not put every feature into one huge component.
+-   Do not over-engineer. Prioritize a coherent, polished MVP that can
+    be completed and demonstrated.
+-   Keep accessibility in mind, including keyboard operation and
+    screen-reader labels.
+-   Do not use a generated image as a substitute for a working dashboard
+    or form.
+
+============================================================ 17. BUILD
+ORDER ============================================================
+
+Implement in this order, completing and checking each phase:
+
+PHASE 1 — Project foundation - Inspect the existing LEGIT folder and
+preserve existing asset files. - Set up Vite + React + TypeScript +
+Tailwind CSS. - Configure linting, formatting, routing, theme, and base
+layout. - Ensure the existing assets resolve from /assets/.... - Add
+README and .env.example.
+
+PHASE 2 — Brand and design system - Build BrandLogo component with
+student/admin variant. - Build FoxMascot component with size and
+placement options. - Implement responsive navigation and theme toggle. -
+Create consistent typography, spacing, cards, badges, forms, tables, and
+toasts.
+
+PHASE 3 — Mock data and typed services - Create TypeScript models and
+synthetic demo data. - Implement mock services and service interfaces. -
+Create API mode configuration and typed API client. - Make mock mode
+usable without backend or database.
+
+PHASE 4 — Student experience - Landing page, dashboard, assistant demo,
+complaint quality checker, draft review, detail/tracking, and help. -
+Make the quality checker and draft flow genuinely interactive in mock
+mode. - Show source citations only when backed by configured demo source
+metadata; never invent official citations.
+
+PHASE 5 — Admin experience - Dashboard, institution directory/profile,
+complaint registry, case workspace/timeline, overlap intelligence,
+coordination centre, alerts, reports, Bureau configuration, user/role
+demo management, and audit log. - Make search, filters, tabs, sort, case
+relationship review, action entry, coordination request, and closure
+form functional in demo mode.
+
+PHASE 6 — Backend foundation - Add a minimal Node.js + TypeScript +
+Express server scaffold with health route and typed route/service
+contracts. - Add Gemini adapter interface with secure environment
+variable handling. - Do not create database connections or claim
+semantic vector search/RAG is live. - Provide honest 501/503 “not
+configured” responses for endpoints not implemented, or document the
+endpoint as contract-only. - Add docs/API_CONTRACT.md describing future
+integration.
+
+PHASE 7 — Verification and polish - Run type checking, lint, tests, and
+production build. - Fix all blocking issues. - Check the student and
+admin flows at desktop and mobile sizes. - Check both themes. - Confirm
+assets and logos are not stretched. - Confirm demo labels are visible. -
+Update README with exact commands, environment variables, demo
+logins/role selector, routes, current limitations, and future database
+integration steps.
+
+============================================================ 18.
+ACCEPTANCE CHECKLIST — DO NOT FINISH UNTIL REVIEWED
+============================================================
+
+The project is acceptable only when: [ ] Student application is branded
+“Legit Fox”. [ ] Admin dashboard is branded “AICTE Legit”. [ ] Both use
+the same fox emblem, with the correct wordmark per application. [ ] The
+existing image paths are used exactly as specified. [ ] Light and dark
+themes work and persist. [ ] The app is responsive and visually
+polished. [ ] Demo mode works without a database or API key. [ ]
+Synthetic data is clearly labelled as non-official. [ ] Student
+complaint quality checker identifies missing information, explains why,
+and allows edits/re-checking. [ ] Checker does not automatically reject
+complaints. [ ] Complaint draft can be reviewed and saved in demo mode.
+[ ] Similar-case suggestions include explanations and never
+automatically merge cases. [ ] Same-institution unrelated cases remain
+distinct. [ ] Historical outcome records distinguish verified from
+unverified and resolved from procedurally closed. [ ] Admin can inspect
+institution profiles and consolidated complaint history. [ ] Admin can
+review and decide suggested overlaps with a reason. [ ] Admin can record
+case actions, coordination activity, and structured closure outcomes in
+demo mode. [ ] Alerts and deadline logic work consistently. [ ] Search
+and filters work in core registry screens. [ ] Bureau list and routing
+are configurable; no fabricated official list of 27 Bureaus is
+presented. [ ] Student views do not show internal remarks. [ ] API
+service layer and typed contracts are ready for future database
+connection. [ ] Gemini key is never exposed in the frontend. [ ]
+Node/Express backend scaffold is honest about unconfigured integrations.
+[ ] README documents run commands and limitations. [ ] TypeScript check,
+tests, lint (if configured), and production build pass.
+
+============================================================ 19.
+EXPECTED FINAL RESPONSE FROM ANTIGRAVITY
+============================================================
+
+When implementation is complete, report: 1. What was created. 2. Exact
+root/frontend/backend folder structure. 3. Commands to install
+dependencies and run the frontend. 4. Commands to run the optional
+Express backend. 5. Environment variables required, with no secret
+values. 6. Demo route URLs and how to switch between student and admin
+views. 7. Which features work with synthetic mock data. 8. Which
+features are only prepared interfaces and still require Gemini
+credentials, verified source documents, database, vector embeddings,
+auth, or storage. 9. Results of type checking, lint, tests, and
+production build. 10. Any remaining blockers. Do not claim tests or
+build passed unless you actually ran them.
+
+Start by inspecting the existing LEGIT folder and its public/assets
+contents. Then implement the project in phases. Do not stop after
+generating a plan.
+
+
+============================================================
+20. FINAL IMPLEMENTATION CLARIFICATIONS — MANDATORY
+============================================================
+
+A. PRESERVE THE EXISTING PROJECT
+- The root folder is exactly `LEGIT`. Do not create `LEGIT/LEGIT/`.
+- Before changing anything, inspect the existing files and list the asset files already present.
+- Preserve user-created images and exact asset paths. Do not rename, overwrite, or delete them.
+- If a package file already exists, inspect and adapt it rather than replacing it blindly.
+
+B. EXACT ENVIRONMENT VARIABLES
+Frontend root `.env.example`:
+VITE_DATA_MODE=mock
+VITE_API_BASE_URL=http://localhost:4000/api
+
+Server `server/.env.example`:
+PORT=4000
+GEMINI_API_KEY=
+GEMINI_MODEL=
+
+- `GEMINI_API_KEY` is server-only. Never use it in a `VITE_*` variable, React component, browser storage, client bundle, or source control.
+- Never invent or commit an API key. If no key is configured, the application must still work in mock mode and clearly indicate that live AI is unavailable.
+- `GEMINI_MODEL` must be configurable on the server; document the model selected and allow it to be changed without editing application logic.
+- Validate environment settings at startup and return readable configuration errors without leaking secrets.
+
+C. DEMO DATA MUST PERSIST
+- In mock mode, persist draft complaints, case actions, overlap-review decisions, coordination requests/responses, and closure outcomes in `localStorage`.
+- Use versioned storage keys and safe parsing. If saved data is invalid, recover gracefully and show a useful message.
+- Include a clearly labelled “Reset demo data” action with a confirmation dialog.
+- Never silently use mock data when API mode is selected and the backend fails. Show an explicit connection/error state instead.
+
+D. BUILD PRIORITY AND QUALITY GATES
+- Build and verify a runnable vertical slice first: Vite app shell, routing, theme, logos/assets, mock service layer, and production build.
+- Then implement the student flow, then the admin case workflow, then reports/advanced screens, then the Express scaffold.
+- Keep the app runnable after each phase. Do not create many empty files just to match the proposed tree.
+- Do not leave the main pages as placeholders. If scope is too large for one pass, prioritize the core end-to-end workflows and explicitly report unfinished items.
+- After each major phase, run type checking and the build; run tests and lint when configured. Fix errors before continuing.
+
+E. DEPLOYMENT READINESS
+- Prepare the frontend for Vercel deployment; do not claim it has been deployed.
+- Prepare the Node.js/Express backend to deploy independently to a Node.js-compatible hosting provider; do not assume credentials or a provider account.
+- Document separate frontend and backend install, development, build, and start commands.
+- Backend must listen on `process.env.PORT` when deployed.
+- Document `VITE_API_BASE_URL`, server environment variables, production CORS origins, and React Router fallback/rewrite requirements.
+- Configure CORS for explicitly allowed origins. Do not use unrestricted wildcard CORS with credentials.
+- Do not put database credentials or server secrets in frontend environment variables.
+- A database, production authentication, private evidence storage, real vector search, and verified regulatory corpus remain future integration tasks unless actually implemented and tested.
+
+F. RESPONSIBLE AI AND OFFICIAL ROUTING
+- The official list of Bureaus/Cells and authoritative routing rules must be verified before production use. The demo must label its sample entries as illustrative, not official.
+- AI classifications and similarity scores are recommendations only. Never automatically reject, merge, close, or transfer a complaint.
+- Do not present synthetic historical cases as actual AICTE cases or their outcomes as legal precedents.
+- Do not present chatbot responses as official legal advice. Display official source metadata only when a real/configured source record supports it.
+- If regulatory sources are not configured, clearly say that verified source retrieval is unavailable; do not fabricate citations or legal provisions.
+- A quality checker should request useful missing details, explain why they matter, permit “unknown/not applicable,” and never make a final validity decision.
+
+G. FINAL HONESTY REQUIREMENT
+- Do not claim “100% complete” solely because files have been generated. Report actual test/build results.
+- If a command fails, show the failure and fix it where possible. Never claim a test passed unless it was run successfully.
+- Clearly separate features that work in mock mode from integrations that are only scaffolded.

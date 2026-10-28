@@ -1,0 +1,583 @@
+import { useState } from 'react';
+import { CheckCircle2, AlertCircle, Circle, History, FileText, Send, Search } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Label } from '@/components/ui/Label';
+import { Badge } from '@/components/ui/Badge';
+import { Autocomplete } from '@/components/ui/Autocomplete';
+import { FoxMascot } from '@/components/branding/FoxMascot';
+import { StatusBadge } from '@/components/common/StatusBadge';
+import { DEMO_INSTITUTIONS } from '@/data/demoInstitutions';
+
+export function MainComplaintPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    region: '',
+    institutionName: '',
+    category: '',
+    subject: '',
+    description: '',
+  });
+  const [checked, setChecked] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [selectedCase, setSelectedCase] = useState<any>(null);
+
+  // Prepare institution options for autocomplete
+  const institutionOptions = DEMO_INSTITUTIONS.map((inst) => ({
+    value: inst.id,
+    label: inst.name,
+    subtitle: inst.addressSummary,
+  }));
+
+  const regionOptions = [
+    'Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem',
+    'Tirunelveli', 'Tiruppur', 'Vellore', 'Erode', 'Thoothukudi',
+    'Dindigul', 'Thanjavur', 'Ranipet', 'Sivakasi', 'Karur', 'Other'
+  ];
+
+  const categoryOptions = [
+    { value: 'document_retention', label: 'Document Retention' },
+    { value: 'fee_refund', label: 'Fee Refund' },
+    { value: 'examination_related', label: 'Examination Related' },
+    { value: 'admission_grievance', label: 'Admission Grievance' },
+    { value: 'infrastructure', label: 'Infrastructure' },
+    { value: 'faculty_shortage', label: 'Faculty Shortage' },
+    { value: 'ragging', label: 'Ragging' },
+    { value: 'discrimination', label: 'Discrimination' },
+    { value: 'academic_malpractice', label: 'Academic Malpractice' },
+    { value: 'other', label: 'Other' },
+  ];
+
+  const handleCheck = () => {
+    setChecked(true);
+  };
+
+  const handleSubmit = () => {
+    // Generate case ID
+    const caseId = `CASE-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`;
+
+    alert(`Case submitted successfully!\n\nYour Case ID: ${caseId}\n\nPlease save this Case ID to track your case status.`);
+
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      region: '',
+      institutionName: '',
+      category: '',
+      subject: '',
+      description: '',
+    });
+    setChecked(false);
+  };
+
+  const updateFormData = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const checklistItems = [
+    {
+      label: 'Personal Information',
+      status: formData.name && formData.email && formData.phone ? 'complete' : 'needed',
+      explanation: 'Name, email and phone number are required for communication',
+    },
+    {
+      label: 'Institution & Region',
+      status: formData.institutionName && formData.region ? 'complete' : 'needed',
+      explanation: 'Institution and region help route the case correctly',
+    },
+    {
+      label: 'Category & Subject',
+      status: formData.category && formData.subject ? 'complete' : 'needed',
+      explanation: 'Category and subject help in quick identification of the issue',
+    },
+    {
+      label: 'Detailed Description',
+      status: formData.description.length > 50 ? 'complete' : 'needed',
+      explanation: 'A detailed description helps officials understand the nature of the case',
+    },
+  ];
+
+  const isFormValid = () => {
+    return (
+      formData.name &&
+      formData.email &&
+      formData.phone &&
+      formData.region &&
+      formData.institutionName &&
+      formData.category &&
+      formData.subject &&
+      formData.description.length >= 50
+    );
+  };
+
+  // Demo case history
+  const caseHistory = [
+    {
+      id: 'CASE-2024-001',
+      name: 'Rajesh Kumar',
+      email: 'rajesh.kumar@email.com',
+      phone: '+91 98765 43210',
+      region: 'Coimbatore',
+      institution: 'PSG College of Technology',
+      category: 'Document Retention',
+      subject: 'Original Certificates Not Returned',
+      description: 'My college is keeping my original certificates even though I have completed all requirements and have no pending dues. I graduated 6 months ago and have repeatedly requested for them.',
+      status: 'under_process' as const,
+      date: '2024-10-15',
+      bureau: 'PGRC',
+    },
+    {
+      id: 'CASE-2024-002',
+      name: 'Priya Sharma',
+      email: 'priya.sharma@email.com',
+      phone: '+91 98234 56789',
+      region: 'Chennai',
+      institution: 'Anna University',
+      category: 'Fee Refund',
+      subject: 'Fee Refund Request for Unauthorized Charges',
+      description: 'The college charged me extra fees that were not disclosed during admission. I am requesting a refund of the unauthorized amount.',
+      status: 'disposed' as const,
+      date: '2024-09-20',
+      bureau: 'PGRC',
+    },
+  ];
+
+  // If viewing case details
+  if (selectedCase) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-primary/10 via-primary/5 to-background">
+        <div className="container max-w-4xl mx-auto py-8 px-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">{selectedCase.id}</h1>
+              <p className="text-foreground/70 mt-1">{selectedCase.subject}</p>
+            </div>
+            <Button variant="outline" onClick={() => setSelectedCase(null)}>
+              ← Back to History
+            </Button>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Case Details</CardTitle>
+                <StatusBadge status={selectedCase.status} />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Personal Information */}
+              <div>
+                <h3 className="font-semibold text-sm text-muted-foreground mb-3">Personal Information</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Name</p>
+                    <p className="font-medium">{selectedCase.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Region</p>
+                    <p className="font-medium">{selectedCase.region}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium">{selectedCase.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Phone</p>
+                    <p className="font-medium">{selectedCase.phone}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold text-sm text-muted-foreground mb-3">Case Information</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Institution</p>
+                    <p className="font-medium">{selectedCase.institution}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Category</p>
+                    <p className="font-medium">{selectedCase.category}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Filed On</p>
+                    <p className="font-medium">{new Date(selectedCase.date).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Assigned Bureau</p>
+                    <Badge variant="outline">{selectedCase.bureau}</Badge>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold text-sm text-muted-foreground mb-2">Description</h3>
+                <p className="text-sm leading-relaxed">{selectedCase.description}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (showHistory) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-primary/10 via-primary/5 to-background">
+        <div className="container max-w-4xl mx-auto py-8 px-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 dark:from-amber-400 dark:via-amber-300 dark:to-amber-400 bg-clip-text text-transparent">
+                Case History
+              </h1>
+              <p className="text-foreground/70 mt-2">View your previous cases and their status</p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => window.location.href = '/student/track'}>
+                <Search className="mr-2 h-4 w-4" />
+                Track Case
+              </Button>
+              <Button variant="outline" onClick={() => setShowHistory(false)}>
+                <FileText className="mr-2 h-4 w-4" />
+                New Complaint
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {caseHistory.map((caseItem) => (
+              <Card
+                key={caseItem.id}
+                className="hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => setSelectedCase(caseItem)}
+              >
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <CardTitle className="text-lg">{caseItem.id}</CardTitle>
+                        <StatusBadge status={caseItem.status} />
+                      </div>
+                      <CardDescription className="mt-2">
+                        <span className="font-medium">{caseItem.subject}</span>
+                      </CardDescription>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {caseItem.institution} • {caseItem.region}
+                      </p>
+                    </div>
+                    <div className="text-sm text-muted-foreground">{caseItem.date}</div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-foreground/80 line-clamp-2">{caseItem.description}</p>
+                  <p className="text-xs text-primary mt-2">Click to view full details →</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {caseHistory.length === 0 && (
+            <Card>
+              <CardContent className="text-center py-12">
+                <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No case history yet</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Your filed cases will appear here
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-primary/10 via-primary/5 to-background">
+      <div className="container max-w-4xl mx-auto py-8 px-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 dark:from-amber-400 dark:via-amber-300 dark:to-amber-400 bg-clip-text text-transparent">
+              File Your Case
+            </h1>
+            <p className="text-foreground/70 mt-2">
+              Share your grievance and we'll help ensure it's complete
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => window.location.href = '/student/track'}>
+              <Search className="mr-2 h-4 w-4" />
+              Track Case
+            </Button>
+            <Button variant="outline" onClick={() => setShowHistory(true)}>
+              <History className="mr-2 h-4 w-4" />
+              History
+            </Button>
+          </div>
+        </div>
+
+        {/* Main Form Card */}
+        <Card className="border-primary/20 shadow-lg">
+          <CardHeader>
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-lg bg-primary/10">
+                <FoxMascot variant="assistance" size="sm" />
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-2xl">Describe Your Issue</CardTitle>
+                <CardDescription className="mt-2 text-base">
+                  Tell us about your complaint in detail. The more information you provide, the better
+                  we can help.
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Name Field */}
+            <div>
+              <Label htmlFor="name">Your Full Name *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => updateFormData('name', e.target.value)}
+                placeholder="e.g., Rajesh Kumar"
+                className="mt-2"
+              />
+            </div>
+
+            {/* Contact Information Row */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => updateFormData('email', e.target.value)}
+                  placeholder="your.email@example.com"
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone">Phone Number *</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => updateFormData('phone', e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="mt-2"
+                />
+              </div>
+            </div>
+
+            {/* Region and Category Row */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="region">Your Region *</Label>
+                <select
+                  id="region"
+                  value={formData.region}
+                  onChange={(e) => updateFormData('region', e.target.value)}
+                  className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">Select region...</option>
+                  {regionOptions.map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="category">Case Category *</Label>
+                <select
+                  id="category"
+                  value={formData.category}
+                  onChange={(e) => updateFormData('category', e.target.value)}
+                  className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">Select category...</option>
+                  {categoryOptions.map((cat) => (
+                    <option key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Institution Name */}
+            <div>
+              <Label htmlFor="institution">Institution Name *</Label>
+              <div className="mt-2">
+                <Autocomplete
+                  options={institutionOptions}
+                  value={formData.institutionName}
+                  onChange={(value) => updateFormData('institutionName', value)}
+                  placeholder="Start typing your institution name..."
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Start typing to see Tamil Nadu institutions
+              </p>
+            </div>
+
+            {/* Subject */}
+            <div>
+              <Label htmlFor="subject">Subject/Title *</Label>
+              <Input
+                id="subject"
+                value={formData.subject}
+                onChange={(e) => updateFormData('subject', e.target.value)}
+                placeholder="Brief title of your case (e.g., Original certificates not returned)"
+                className="mt-2"
+                maxLength={100}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                A short, clear title that summarizes your issue
+              </p>
+            </div>
+
+            {/* Case Description */}
+            <div>
+              <Label htmlFor="description">Detailed Description *</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => updateFormData('description', e.target.value)}
+                placeholder="Example: My college is withholding my original certificates even though I have completed all requirements and cleared all dues. I graduated 6 months ago and have made multiple requests..."
+                rows={8}
+                className="mt-2"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Include: What happened, when it happened, what you've tried, and supporting details (minimum 50 characters)
+              </p>
+            </div>
+
+            {/* Check and Submit Buttons */}
+            <div className="flex gap-3">
+              <Button onClick={handleCheck} variant="outline" className="flex-1">
+                <CheckCircle2 className="mr-2 h-4 w-4" />
+                Check Completeness
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={!isFormValid()}
+                className="flex-1"
+              >
+                <Send className="mr-2 h-4 w-4" />
+                Submit Case
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Completeness Check Results */}
+        {checked && (
+          <Card className="border-amber-200 dark:border-amber-700">
+            <CardHeader>
+              <CardTitle className="text-amber-900 dark:text-amber-400">
+                Completeness Check
+              </CardTitle>
+              <CardDescription>
+                Review what information is present and what might be helpful to add
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                {checklistItems.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 border rounded-lg">
+                    {item.status === 'complete' && (
+                      <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    )}
+                    {item.status === 'needed' && (
+                      <AlertCircle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                    )}
+                    {item.status === 'optional' && (
+                      <Circle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{item.label}</span>
+                        <Badge
+                          variant={
+                            item.status === 'complete'
+                              ? 'green'
+                              : item.status === 'needed'
+                                ? 'orange'
+                                : 'blue'
+                          }
+                        >
+                          {item.status}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-foreground/70 mt-1">{item.explanation}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                <p className="text-sm text-blue-800 dark:text-gray-200">
+                  <strong className="text-blue-900 dark:text-amber-400">Remember:</strong> Missing
+                  information does not mean your complaint will be automatically rejected. The official
+                  process determines what is required. This checker helps you prepare a more complete
+                  submission.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Information Section */}
+        <Card className="bg-muted/50 border-primary/20">
+          <CardHeader>
+            <CardTitle className="text-xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 dark:from-amber-400 dark:via-amber-300 dark:to-amber-400 bg-clip-text text-transparent">
+              Tips for a Strong Case
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div className="flex items-start gap-2">
+                <span className="text-amber-600 dark:text-amber-400 mt-0.5">✓</span>
+                <span className="text-foreground/80">
+                  <strong className="text-primary dark:text-amber-400">Be Specific:</strong> Include
+                  dates, names, and specific incidents
+                </span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-amber-600 dark:text-amber-400 mt-0.5">✓</span>
+                <span className="text-foreground/80">
+                  <strong className="text-primary dark:text-amber-400">Stay Factual:</strong> Stick
+                  to facts rather than opinions
+                </span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-amber-600 dark:text-amber-400 mt-0.5">✓</span>
+                <span className="text-foreground/80">
+                  <strong className="text-primary dark:text-amber-400">Provide Timeline:</strong>{' '}
+                  Explain when things happened
+                </span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-amber-600 dark:text-amber-400 mt-0.5">✓</span>
+                <span className="text-foreground/80">
+                  <strong className="text-primary dark:text-amber-400">Mention Attempts:</strong>{' '}
+                  What you've tried to resolve it
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
